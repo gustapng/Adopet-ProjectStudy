@@ -12,13 +12,13 @@ class PetDetailsViewController: UIViewController {
     private var pet: Pet
     private var dataManager = DataManager()
     
-    private lazy var img1: UIImageView = {
+    private lazy var decorativeShapeImageView: UIImageView = {
         let imgView = UIImageView(image: UIImage(named: "shape-1"))
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
     }()
     
-    private lazy var text: UILabel = {
+    private lazy var petIntroductionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Saiba mais sobre \(pet.name)"
@@ -29,14 +29,14 @@ class PetDetailsViewController: UIViewController {
         return label
     }()
     
-    private lazy var img2: UIImageView = {
+    private lazy var petImageView: UIImageView = {
         let imgView = UIImageView()
         imgView.translatesAutoresizingMaskIntoConstraints = false
         imgView.contentMode = .scaleAspectFit
         return imgView
     }()
     
-    private lazy var descricao: UILabel = {
+    private lazy var petDescriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "\(pet.age)\n\(pet.size)\n\(pet.behavior)"
@@ -47,7 +47,7 @@ class PetDetailsViewController: UIViewController {
         return label
     }()
     
-    private lazy var location: UILabel = {
+    private lazy var petLocationLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = pet.location
@@ -84,7 +84,7 @@ class PetDetailsViewController: UIViewController {
     }()
     
     private lazy var stack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [text, img2, descricao, location, callbutton, wppButton])
+        let stack = UIStackView(arrangedSubviews: [petIntroductionLabel, petImageView, petDescriptionLabel, petLocationLabel, callbutton, wppButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.alignment = .fill
         stack.distribution = .equalSpacing
@@ -97,27 +97,27 @@ class PetDetailsViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         
-        view.addSubview(img1)
+        view.addSubview(decorativeShapeImageView)
         view.addSubview(stack)
         
         dataManager.downloadPetImage(from: pet.imageUrl) { image in
             DispatchQueue.main.async {
                 guard let image else { return }
-                self.img2.image = image
+                self.petImageView.image = image
             }
         }
         
         NSLayoutConstraint.activate([
             
-            img1.topAnchor.constraint(equalTo: view.topAnchor),
-            img1.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            img1.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            decorativeShapeImageView.topAnchor.constraint(equalTo: view.topAnchor),
+            decorativeShapeImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            decorativeShapeImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            stack.topAnchor.constraint(equalTo: img1.bottomAnchor, constant: -120),
+            stack.topAnchor.constraint(equalTo: decorativeShapeImageView.bottomAnchor, constant: -120),
             stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
             stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
             
-            img2.heightAnchor.constraint(equalToConstant: 172),
+            petImageView.heightAnchor.constraint(equalToConstant: 172),
             callbutton.heightAnchor.constraint(equalToConstant: 48),
             wppButton.heightAnchor.constraint(equalToConstant: 48),
             
