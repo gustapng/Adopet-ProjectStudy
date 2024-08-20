@@ -9,7 +9,7 @@ import UIKit
 
 class TableHeaderView: UIView {
     
-    private lazy var text: UILabel = {
+    private lazy var helloLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Olá! Veja os amigos disponíveis para adoção!"
@@ -20,7 +20,7 @@ class TableHeaderView: UIView {
         return label
     }()
     
-    private lazy var img1: UIImageView = {
+    private lazy var shapeImage: UIImageView = {
         let imgView = UIImageView(image: UIImage(named: "shape-1"))
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
@@ -28,22 +28,28 @@ class TableHeaderView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        addSubview(img1)
-        addSubview(text)
-        
-        NSLayoutConstraint.activate([
-            img1.topAnchor.constraint(equalTo: topAnchor),
-            img1.leadingAnchor.constraint(equalTo: leadingAnchor),
-            img1.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
-            text.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 64),
-            text.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -64),
-            text.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
-        ])
+        addSubviews()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func addSubviews() {
+        addSubview(shapeImage)
+        addSubview(helloLabel)
+    }
+    
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            shapeImage.topAnchor.constraint(equalTo: topAnchor),
+            shapeImage.leadingAnchor.constraint(equalTo: leadingAnchor),
+            shapeImage.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            helloLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 64),
+            helloLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -64),
+            helloLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+        ])
     }
 }

@@ -58,18 +58,18 @@ class PetDetailsViewController: UIViewController {
         return label
     }()
     
-    private lazy var callbutton: UIButton = {
+    private lazy var phoneCallButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Ligar para responsável", for: .normal)
         button.backgroundColor = UIColor(named: "ColorCoral")
         button.titleLabel?.font = .init(name: "Poppins-Bold", size: 18)
         button.layer.cornerRadius = 8
-        button.addTarget(self, action: #selector(call), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapPhoneCallButton), for: .touchUpInside)
         return button
     }()
     
-    private lazy var wppButton: UIButton = {
+    private lazy var whatsappMessageButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Chamar no Whatsapp", for: .normal)
@@ -79,12 +79,12 @@ class PetDetailsViewController: UIViewController {
         button.titleLabel?.font = .init(name: "Poppins-Bold", size: 18)
         button.setTitleColor(UIColor(named: "ColorCoral"), for: .normal)
         button.layer.cornerRadius = 8
-        button.addTarget(self, action: #selector(sendWpp), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapSendWhatsappMessageButton), for: .touchUpInside)
         return button
     }()
     
-    private lazy var stack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [petIntroductionLabel, petImageView, petDescriptionLabel, petLocationLabel, callbutton, wppButton])
+    private lazy var stackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [petIntroductionLabel, petImageView, petDescriptionLabel, petLocationLabel, phoneCallButton, whatsappMessageButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.alignment = .fill
         stack.distribution = .equalSpacing
@@ -95,33 +95,10 @@ class PetDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        
-        view.addSubview(decorativeShapeImageView)
-        view.addSubview(stack)
-        
-        dataManager.downloadPetImage(from: pet.imageUrl) { image in
-            DispatchQueue.main.async {
-                guard let image else { return }
-                self.petImageView.image = image
-            }
-        }
-        
-        NSLayoutConstraint.activate([
-            
-            decorativeShapeImageView.topAnchor.constraint(equalTo: view.topAnchor),
-            decorativeShapeImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            decorativeShapeImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            
-            stack.topAnchor.constraint(equalTo: decorativeShapeImageView.bottomAnchor, constant: -120),
-            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
-            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
-            
-            petImageView.heightAnchor.constraint(equalToConstant: 172),
-            callbutton.heightAnchor.constraint(equalToConstant: 48),
-            wppButton.heightAnchor.constraint(equalToConstant: 48),
-            
-        ])
+        setupView()
+        addSubviews()
+        fetchPetDetails()
+        setupContraints()
     }
     
     init(pet: Pet) {
@@ -133,21 +110,59 @@ class PetDetailsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func call() {
+    private func setupView() {
+        view.backgroundColor = .white
+    }
+    
+    private func addSubviews() {
+        view.addSubview(decorativeShapeImageView)
+        view.addSubview(stackView)
+    }
+    
+    private func fetchPetDetails() {
+        dataManager.downloadPetImage(from: pet.imageUrl) { image in
+            DispatchQueue.main.async {
+                guard let image else { return }
+                self.petImageView.image = image
+            }
+        }
+    }
+    
+    private func setupContraints() {
+        NSLayoutConstraint.activate([
+            decorativeShapeImageView.topAnchor.constraint(equalTo: view.topAnchor),
+            decorativeShapeImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            decorativeShapeImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            stackView.topAnchor.constraint(equalTo: decorativeShapeImageView.bottomAnchor, constant: -120),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
+            
+            petImageView.heightAnchor.constraint(equalToConstant: 172),
+            phoneCallButton.heightAnchor.constraint(equalToConstant: 48),
+            whatsappMessageButton.heightAnchor.constraint(equalToConstant: 48),
+            
+        ])
+    }
+    
+    @objc func didTapPhoneCallButton() {
         if let url = URL(string: "tel://\(pet.phoneNumber)") {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }
     
-    @objc func sendWpp() {
-        if let whatsapp = URL(string: "whatsapp://send?phone=\(pet.phoneNumber)&text=Olá! Tenho interesse no pet \(pet.name)") {
-            if UIApplication.shared.canOpenURL(whatsapp) {
-                UIApplication.shared.open(whatsapp, options: [:], completionHandler: nil)
-            } else {
-                if let appstore = URL(string: "https://apps.apple.com/app/whatsapp-messenger/id310633997") {
-                    UIApplication.shared.open(appstore, options: [:], completionHandler: nil)
-                }
-            }
+    @objc func didTapSendWhatsappMessageButton() {
+        
+        guard let whatsappURL = URL(string: "whatsapp://send?phone=\(pet.phoneNumber)&text=Olá! Tenho interesse no pet \(pet.name)") else { return }
+        if UIApplication.shared.canOpenURL(whatsappURL) {
+            UIApplication.shared.open(whatsappURL, options: [:], completionHandler: nil)
+        } else {
+            openWhatsappInAppStore()
         }
+    }
+    
+    private func openWhatsappInAppStore() {
+        guard let appStoreUrl = URL(string: "https://apps.apple.com/app/whatsapp-messenger/id310633997") else { return }
+        UIApplication.shared.open(appStoreUrl, options: [:], completionHandler: nil)
     }
 }

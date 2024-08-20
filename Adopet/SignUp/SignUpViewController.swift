@@ -23,19 +23,19 @@ class SignUpViewController: UIViewController {
         return v
     }()
     
-    private lazy var img1: UIImageView = {
+    private lazy var shapeOneImage: UIImageView = {
         let imgView = UIImageView(image: UIImage(named: "shape-1"))
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
     }()
     
-    private lazy var img2: UIImageView = {
+    private lazy var shapeTwoImage: UIImageView = {
         let imgView = UIImageView(image: UIImage(named: "paws"))
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
     }()
     
-    private lazy var label: UILabel = {
+    private lazy var registerLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Ainda não tem cadastro? Então, antes de buscar seu melhor amigo, precisamos de alguns dados:"
@@ -158,7 +158,7 @@ class SignUpViewController: UIViewController {
         return stack
     }()
     
-    private lazy var button: UIButton = {
+    private lazy var signButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Cadastrar", for: .normal)
@@ -171,15 +171,31 @@ class SignUpViewController: UIViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
+        addSubviews()
+        setupScrollView()
+    }
+    
+    private func setupView() {
         view.backgroundColor = .white
         navigationItem.hidesBackButton = true
-        
+    }
+    
+    private func addSubviews() {
         view.addSubview(scrollView)
-        
+        contentView.addSubview(shapeOneImage)
+        contentView.addSubview(registerLabel)
+        contentView.addSubview(stack)
+        contentView.addSubview(signButton)
+        contentView.addSubview(shapeTwoImage)
+    }
+    
+    private func setupScrollView() {
         scrollView.contentInsetAdjustmentBehavior = .never
-        
         scrollView.addSubview(contentView)
-        
+    }
+    
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -194,27 +210,18 @@ class SignUpViewController: UIViewController {
             
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-        ])
-        contentView.addSubview(img1)
-        contentView.addSubview(label)
-        contentView.addSubview(stack)
-        contentView.addSubview(button)
-        contentView.addSubview(img2)
-        
-        NSLayoutConstraint.activate([
+            shapeTwoImage.topAnchor.constraint(equalTo: contentView.topAnchor),
+            shapeTwoImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
-            img2.topAnchor.constraint(equalTo: contentView.topAnchor),
-            img2.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            shapeOneImage.topAnchor.constraint(equalTo: contentView.topAnchor),
+            shapeOneImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            shapeOneImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
-            img1.topAnchor.constraint(equalTo: contentView.topAnchor),
-            img1.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            img1.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            registerLabel.topAnchor.constraint(equalTo: shapeOneImage.bottomAnchor, constant: -120),
+            registerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 64),
+            registerLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -64),
             
-            label.topAnchor.constraint(equalTo: img1.bottomAnchor, constant: -120),
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 64),
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -64),
-            
-            stack.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 32),
+            stack.topAnchor.constraint(equalTo: registerLabel.bottomAnchor, constant: 32),
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
             
@@ -223,18 +230,23 @@ class SignUpViewController: UIViewController {
             emailTxtField.heightAnchor.constraint(equalToConstant: 48),
             passwordtxtField.heightAnchor.constraint(equalToConstant: 48),
             
-            button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 88),
-            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -88),
-            button.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 32),
-            button.heightAnchor.constraint(equalToConstant: 48),
-            
-            button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -32)
+            signButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 88),
+            signButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -88),
+            signButton.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 32),
+            signButton.heightAnchor.constraint(equalToConstant: 48),
+            signButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -32)
         ])
     }
     
     @objc func signUpButton() {
         
-        db.saveUser(name: nameTxtField.text!, email: emailTxtField.text!, phoneNumber: telefoneTxtField.text!, password: password.text!)
+        guard let name = nameTxtField.text,
+              let email = emailTxtField.text,
+              let phoneNumber = telefoneTxtField.text,
+              let password = passwordtxtField.text else { return }
+        
+        let userData = CreateUserAccountModel(name: name, email: email, phoneNumber: phoneNumber, password: password)
+        db.saveUser(userData: userData)
         
         navigationController?.pushViewController(SignInViewController(), animated: true)
     }
