@@ -47,6 +47,7 @@
 		EC2732882C76AFF600FAE8F7 /* APLabeledTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2732872C76AFF600FAE8F7 /* APLabeledTextField.swift */; };
 		EC27328D2C76BAE800FAE8F7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC27328C2C76BAE800FAE8F7 /* Constants.swift */; };
 		EC47C54F2C754F5D002458AB /* CreateUserAccountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC47C54E2C754F5D002458AB /* CreateUserAccountModel.swift */; };
+		ECA222612C7E800300208FEC /* NetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA222602C7E800300208FEC /* NetworkingService.swift */; };
 		ECCD16342C7D4B45006E027C /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCD16332C7D4B45006E027C /* UserManager.swift */; };
 		ECCD16362C7D4B77006E027C /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCD16352C7D4B77006E027C /* AuthenticationManager.swift */; };
 		ECCD16382C7D4BA0006E027C /* PetsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCD16372C7D4BA0006E027C /* PetsDataService.swift */; };
@@ -117,6 +118,7 @@
 		EC2732872C76AFF600FAE8F7 /* APLabeledTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APLabeledTextField.swift; sourceTree = "<group>"; };
 		EC27328C2C76BAE800FAE8F7 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EC47C54E2C754F5D002458AB /* CreateUserAccountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserAccountModel.swift; sourceTree = "<group>"; };
+		ECA222602C7E800300208FEC /* NetworkingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingService.swift; sourceTree = "<group>"; };
 		ECCD16332C7D4B45006E027C /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		ECCD16352C7D4B77006E027C /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		ECCD16372C7D4BA0006E027C /* PetsDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetsDataService.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 				ECCD16392C7D4BDE006E027C /* ImageDownloader.swift */,
 				ECCD163B2C7D516D006E027C /* ExternalLinksHandler.swift */,
 				ECCD163E2C7D5347006E027C /* URLHandler.swift */,
+				ECA222602C7E800300208FEC /* NetworkingService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -519,6 +522,7 @@
 				48941E3C2B83E75E00C2CF86 /* PetDetailsViewController.swift in Sources */,
 				48A900D22B79786F0057616A /* SceneDelegate.swift in Sources */,
 				48C9B3662B7C200200F16F61 /* PetsListViewController.swift in Sources */,
+				ECA222612C7E800300208FEC /* NetworkingService.swift in Sources */,
 				48A901062B7AB06C0057616A /* SignUpViewController.swift in Sources */,
 				ECCD16342C7D4B45006E027C /* UserManager.swift in Sources */,
 			);

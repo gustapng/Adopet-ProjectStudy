@@ -10,7 +10,7 @@ import UIKit
 class PetsListViewController: UIViewController {
     
     var data: [Pet] = []
-    private var dataService = PetsDataService()
+    private var dataService = PetsDataService(networkingService: UrlSessionNetworking())
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -27,6 +27,7 @@ class PetsListViewController: UIViewController {
         
         super.viewDidLoad()
         setupView()
+        dataService.delegate = self
         addSubviews()
         setupTableHeaderView()
         setupNavigationBarButton()
@@ -61,23 +62,24 @@ class PetsListViewController: UIViewController {
     }
     
     private func fetchAllPets() {
-        dataService.fetchPets(url: URL(string: "https://my-json-server.typicode.com/giovannamoeller/pets-api/pets")!) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let result):
-                    self.data = result
-                    self.tableView.reloadData()
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
+        dataService.fetchPets()
     }
     
     override func viewSafeAreaInsetsDidChange() {
         setupConstraints()
     }
     
+}
+
+extension PetsListViewController: PetsDataServiceDelegate {
+    func didFetchPetsSuccessfully(_ pets: [Pet]) {
+        self.data = pets
+        tableView.reloadData()
+    }
+    
+    func didFailWithError(_ error: NetworkingError) {
+        print(error)
+    }
 }
 
 //MARK: TABLE VIEW DATASOURCE AND DELEGATE
