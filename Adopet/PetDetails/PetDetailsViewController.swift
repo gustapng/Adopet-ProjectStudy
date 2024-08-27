@@ -10,7 +10,8 @@ import UIKit
 class PetDetailsViewController: UIViewController {
     
     private var pet: Pet
-    private var dataManager = DataManager()
+    private var imageDownloader = ImageDownloader()
+    private var externalLinksHandler = ExternalLinksHandler()
     
     private lazy var decorativeShapeImageView: UIImageView = {
         let imgView = UIImageView(image: UIImage(named: "shape-1"))
@@ -120,9 +121,10 @@ class PetDetailsViewController: UIViewController {
     }
     
     private func fetchPetDetails() {
-        dataManager.downloadPetImage(from: pet.imageUrl) { image in
+        imageDownloader.downloadImage(from: pet.imageUrl) { data in
             DispatchQueue.main.async {
-                guard let image else { return }
+                guard let data = data,
+                      let image = UIImage(data: data) else { return }
                 self.petImageView.image = image
             }
         }
@@ -146,23 +148,10 @@ class PetDetailsViewController: UIViewController {
     }
     
     @objc func didTapPhoneCallButton() {
-        if let url = URL(string: "tel://\(pet.phoneNumber)") {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        }
+        externalLinksHandler.openTelephoneUrl(phoneNumber: pet.phoneNumber)
     }
     
     @objc func didTapSendWhatsappMessageButton() {
-        
-        guard let whatsappURL = URL(string: "whatsapp://send?phone=\(pet.phoneNumber)&text=Olá! Tenho interesse no pet \(pet.name)") else { return }
-        if UIApplication.shared.canOpenURL(whatsappURL) {
-            UIApplication.shared.open(whatsappURL, options: [:], completionHandler: nil)
-        } else {
-            openWhatsappInAppStore()
-        }
-    }
-    
-    private func openWhatsappInAppStore() {
-        guard let appStoreUrl = URL(string: "https://apps.apple.com/app/whatsapp-messenger/id310633997") else { return }
-        UIApplication.shared.open(appStoreUrl, options: [:], completionHandler: nil)
+        externalLinksHandler.openWhatsappUrl(phoneNumber: pet.phoneNumber, message: "Olá! Tenho interesse no pet \(pet.name)")
     }
 }

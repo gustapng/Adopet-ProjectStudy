@@ -9,7 +9,7 @@ import UIKit
 
 class SignUpViewController: UIViewController {
     
-    private let db = DataManager()
+    private var userManager = UserManager()
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -68,7 +68,7 @@ class SignUpViewController: UIViewController {
     }()
     
     private lazy var stack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [nameInputField, emailInputField, phoneNumberInputField, passwordInputField])
+        let stack = UIStackView(arrangedSubviews: [nameInputField, emailInputField, phoneNumberInputField, passwordInputField, signButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.alignment = .fill
         stack.distribution = .equalSpacing
@@ -77,17 +77,13 @@ class SignUpViewController: UIViewController {
         return stack
     }()
     
-    private lazy var signButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Cadastrar", for: .normal)
-        button.backgroundColor = UIColor(named: "ColorCoral")
-        button.titleLabel?.font = .init(name: "Poppins-Bold", size: 18)
-        button.layer.cornerRadius = 8
-        button.addTarget(self, action: #selector(signUpButton), for: .touchUpInside)
-        return button
+    private lazy var signButton: APButton = {
+        let signButton = APButton(title: "Teste")
+        signButton.isUserInteractionEnabled = true
+        signButton.button.addTarget(self, action: #selector(signUpButton), for: .touchUpInside)
+        return signButton
     }()
-        
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -145,23 +141,21 @@ class SignUpViewController: UIViewController {
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
             
-            signButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 88),
-            signButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -88),
             signButton.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 32),
-            signButton.heightAnchor.constraint(equalToConstant: 48),
-            signButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -32)
+            signButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            signButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
         ])
     }
     
     @objc func signUpButton() {
-        
+        print("teste")
         guard let name = nameInputField.textField.text,
               let email = emailInputField.textField.text,
               let phoneNumber = phoneNumberInputField.textField.text,
               let password = passwordInputField.textField.text else { return }
         
         let userData = CreateUserAccountModel(name: name, email: email, phoneNumber: phoneNumber, password: password)
-        db.saveUser(userData: userData)
+        userManager.saveUser(userData: userData)
         
         navigationController?.pushViewController(SignInViewController(), animated: true)
     }
